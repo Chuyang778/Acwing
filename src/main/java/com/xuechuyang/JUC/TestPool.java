@@ -1,6 +1,6 @@
 package com.xuechuyang.JUC;
 
-import lombok.extern.slf4j.Slf4j;
+
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -14,7 +14,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author ChuYang
  * @version 1.0
  */
-@Slf4j(topic = "c.TestPool")
 public class TestPool {
 }
 
