@@ -1,8 +1,7 @@
 package com.xuechuyang.JUC;
 
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -16,6 +15,27 @@ public class MultiThreadPrint {
     static Lock lock = new ReentrantLock();
     static Condition condition;
 
+    static Object Lock = new Object();
+
+    static class newTask1 implements Runnable{
+        @Override
+        public void run() {
+            while(sum < 100){
+                synchronized (Lock){
+                    while(sum % 2 == 0) {
+                        try {
+                            Lock.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        System.out.println(Thread.currentThread().getName() + ": " + sum++);
+                        Lock.notifyAll();
+                    }
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) {
         //Alibaba的java开发规范中表示要手动创建线程池
         ThreadPoolExecutor executorService = new ThreadPoolExecutor
@@ -24,6 +44,12 @@ public class MultiThreadPrint {
         executorService.execute(new Task1());
         executorService.execute(new Task2());
         executorService.shutdown();
+        new FutureTask<>(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                return null;
+            }
+        });
     }
 
     static class Task1 implements Runnable {
